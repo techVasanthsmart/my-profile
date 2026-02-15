@@ -31,6 +31,8 @@ export const metadata: Metadata = {
   robots: "index, follow",
 };
 
+import { Analytics } from "@vercel/analytics/react";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -47,6 +49,7 @@ export default function RootLayout({
         >
           <BackgroundMatrix />
           <div className="relative z-10">{children}</div>
+          <Analytics />
         </ThemeProvider>
       </body>
     </html>
