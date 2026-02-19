@@ -29,6 +29,9 @@ export const metadata: Metadata = {
     description: "Scalable systems & end-to-end product development.",
   },
   robots: "index, follow",
+  verification: {
+    google: "MtTZgPguua5yFv3AybdrNJ-yHwwfKj3dg4v2q_OHccg",
+  },
 };
 
 import { Analytics } from "@vercel/analytics/react";
