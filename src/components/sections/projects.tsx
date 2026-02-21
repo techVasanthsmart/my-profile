@@ -2,50 +2,8 @@
 
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { siteConfig } from "@/lib/site-config";
-
-const featuredProjects = [
-  {
-    title: "PDF Toolkit",
-    description:
-      "Merge multiple PDFs, split by page or custom ranges, reorder pages, convert images or Markdown to PDF. Production tool for quick document handling.",
-    tags: ["Web", "PDF", "Next.js"],
-    features: ["Merge PDFs", "Split by page or range", "Reorder pages", "Images/Markdown to PDF"],
-    liveUrl: "https://pdf-toolkit.vasanthubs.co.in/",
-    codeUrl: undefined as string | undefined,
-    live: true,
-  },
-  {
-    title: "AI Flight Booking Assistant",
-    description:
-      "AI-assisted flight booking and search. Streamlit app for natural-language queries and booking workflows.",
-    tags: ["Python", "Streamlit", "AI"],
-    features: ["Natural language search", "Flight booking flow", "Streamlit UI"],
-    liveUrl: "https://ai-flight-booking-assistant-qwyknk3lgu6qgjgaab7qvb.streamlit.app/",
-    codeUrl: "https://github.com/techVasanthsmart/AI-Flight-Booking-Assistant",
-    live: true,
-  },
-  {
-    title: "AI Synthetic Dataset Factory",
-    description:
-      "Generate synthetic datasets for ML and data pipelines. Streamlit demo for dataset creation and export.",
-    tags: ["Python", "AI", "Data", "Streamlit"],
-    features: ["Synthetic data generation", "Export formats", "Streamlit demo"],
-    liveUrl: "https://aisyntheticdatasetfactory-debqy6maxvmrskryhx5jtk.streamlit.app/",
-    codeUrl: "https://github.com/techVasanthsmart/AI_Synthetic_Dataset_Factory",
-    live: true,
-  },
-];
-
-const otherProjects = [
-  {
-    title: "Multi-AI Bot Conversation",
-    description: "Multi-AI bot conversation app for comparing and chatting with different AI models.",
-    tags: ["AI", "Chat", "Python"],
-    liveUrl: undefined as string | undefined,
-    codeUrl: "https://github.com/techVasanthsmart/Multi-AI-Bot-Conversation",
-  },
-];
+import Link from "next/link";
+import { featuredProjects, otherProjects } from "@/data/projects";
 
 const ghChartUrl = "https://ghchart.rshah.org/techVasanthsmart";
 
@@ -80,12 +38,12 @@ export function Projects() {
                 )}
               </CardHeader>
               <CardContent className="flex flex-col justify-between h-full space-y-4">
-                <div>
+                <div className="flex-grow flex flex-col">
                   <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
                     {project.description}
                   </p>
                   <ul className="flex flex-wrap gap-2 text-xs text-slate-500 dark:text-slate-400 mb-4">
-                    {project.features.map((f) => (
+                    {project.features?.map((f) => (
                       <li key={f}>{f}</li>
                     ))}
                   </ul>
@@ -100,7 +58,13 @@ export function Projects() {
                     ))}
                   </div>
                 </div>
-                <div className="flex gap-3 pt-2 mt-auto">
+                <div className="flex flex-wrap items-center gap-3 pt-4 mt-auto border-t border-slate-100 dark:border-slate-800/50">
+                  <Link
+                    href={`/projects/${project.slug}`}
+                    className="text-sm font-medium text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+                  >
+                    Details &rarr;
+                  </Link>
                   {project.liveUrl && (
                     <a
                       href={project.liveUrl}
@@ -110,6 +74,14 @@ export function Projects() {
                     >
                       Visit
                     </a>
+                  )}
+                  {project.caseStudyUrl && (
+                    <Link
+                      href={project.caseStudyUrl}
+                      className="text-sm font-medium text-emerald-600 hover:text-emerald-700 dark:text-emerald-400"
+                    >
+                      Case Study
+                    </Link>
                   )}
                   {project.codeUrl && (
                     <a
@@ -143,7 +115,7 @@ export function Projects() {
                 <CardTitle className="text-base">{project.title}</CardTitle>
               </CardHeader>
               <CardContent className="flex flex-col justify-between h-full space-y-3 pt-0">
-                <div>
+                <div className="flex-grow flex flex-col">
                   <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
                     {project.description}
                   </p>
@@ -158,7 +130,13 @@ export function Projects() {
                     ))}
                   </div>
                 </div>
-                <div className="flex gap-3 mt-auto">
+                <div className="flex flex-wrap items-center gap-3 mt-auto pt-4 border-t border-slate-100 dark:border-slate-800/50">
+                  <Link
+                    href={`/projects/${project.slug}`}
+                    className="text-sm font-medium text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+                  >
+                    Details &rarr;
+                  </Link>
                   {project.liveUrl && (
                     <a
                       href={project.liveUrl}
@@ -187,26 +165,29 @@ export function Projects() {
 
         {/* GitHub Activity */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="mt-16"
+          className="mt-20 relative mx-auto w-full max-w-5xl group"
         >
-          <h3 className="mb-4 text-center text-lg font-semibold text-slate-800 dark:text-slate-100">
-            GitHub Activity
-          </h3>
-          <a
-            href={siteConfig.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block w-full max-w-4xl mx-auto"
-          >
-            <img
-              src={ghChartUrl}
-              alt="GitHub contribution graph"
-              className="w-full rounded-xl border border-slate-200 dark:border-slate-700"
-            />
-          </a>
+          <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-indigo-500 to-emerald-500 opacity-30 blur transition duration-1000 group-hover:opacity-50"></div>
+          <div className="relative overflow-hidden rounded-2xl bg-white/60 p-6 backdrop-blur-xl dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-2xl">
+            <h3 className="mb-6 text-center text-xl font-bold bg-gradient-to-r from-slate-800 to-slate-500 bg-clip-text text-transparent dark:from-white dark:to-slate-400">
+              GitHub Contributions
+            </h3>
+            <a
+              href="https://github.com/techVasanthsmart"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full overflow-x-auto whitespace-nowrap pb-4 scrollbar-thin scrollbar-thumb-indigo-500/50 scrollbar-track-transparent snap-x"
+            >
+              <img
+                src={ghChartUrl}
+                alt="GitHub contribution graph"
+                className="min-w-[700px] w-full object-cover pr-4 sm:pr-0 filter dark:invert dark:hue-rotate-180"
+              />
+            </a>
+          </div>
         </motion.div>
 
         <motion.div
@@ -216,7 +197,7 @@ export function Projects() {
           className="mt-12 text-center"
         >
           <a
-            href={siteConfig.github}
+            href="https://github.com/techVasanthsmart"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:border-indigo-500 hover:text-indigo-600 dark:border-slate-600 dark:text-slate-300 dark:hover:border-indigo-500 dark:hover:text-indigo-400"
