@@ -1,20 +1,51 @@
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import { ArrowLeft, Github, Globe, Server, Code, Bot, Database, Zap } from "lucide-react";
+import {
+  ArrowLeft,
+  Github,
+  Globe,
+  Server,
+  Code,
+  Bot,
+  Database,
+  Zap,
+} from "lucide-react";
 import Link from "next/link";
 import { Metadata } from "next";
 import { siteConfig } from "@/lib/site-config";
+import { Breadcrumbs } from "@/components/breadcrumbs";
+import { SchemaInjector } from "@/components/schema-injector";
+import { createArticleSchema } from "@/components/json-ld";
+import { SummaryBox } from "@/components/summary-box";
+import { AuthorBio } from "@/components/author-bio";
 
 export const metadata: Metadata = {
-  title: "DocMind Case Study | Vasanth Kumar",
-  description: "A deep dive into DocMind, a RAG Chat Application built with Next.js, LangChain, and OpenAI.",
+  title: "DocMind Case Study - RAG Chat Application",
+  description:
+    "Deep dive into building DocMind, a RAG-powered chat application for ingesting and conversing with website content using Next.js, LangChain, and OpenAI.",
+  alternates: {
+    canonical: `${siteConfig.siteUrl}/case-studies/docmind`,
+  },
   openGraph: {
-    title: "DocMind Case Study | Vasanth Kumar",
-    description: "A deep dive into DocMind, a RAG Chat Application built with Next.js, LangChain, and OpenAI.",
+    title: "DocMind Case Study - RAG Chat Application",
+    description:
+      "See how I built a production RAG chatbot with Next.js, LangChain, and OpenAI APIs.",
     url: `${siteConfig.siteUrl}/case-studies/docmind`,
     siteName: siteConfig.name,
-    images: ["/og.jpg"], // Assuming a default OG image exists
+    images: [
+      {
+        url: `${siteConfig.siteUrl}/og.jpg`,
+        width: 1200,
+        height: 630,
+      },
+    ],
     type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "DocMind Case Study - RAG Chat Application",
+    description: "Building a production RAG chatbot with Next.js and LangChain",
+    images: [`${siteConfig.siteUrl}/og.jpg`],
   },
 };
 
@@ -24,6 +55,13 @@ export default function DocMindCaseStudy() {
       <Navbar />
       <main className="min-h-screen pt-24 pb-16">
         <article className="max-w-4xl mx-auto px-6">
+          <Breadcrumbs
+            items={[
+              { name: "Case Studies", url: "/case-studies" },
+              { name: "DocMind" },
+            ]}
+          />
+
           <Link
             href="/#projects"
             className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 mb-8 transition-colors group"
@@ -36,8 +74,25 @@ export default function DocMindCaseStudy() {
             <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6">
               DocMind - RAG Chat Application
             </h1>
+            <SchemaInjector
+              schema={createArticleSchema({
+                headline: "DocMind - RAG Chat Application",
+                description:
+                  "A cutting-edge Retrieval-Augmented Generation (RAG) agent capable of ingesting websites and enabling users to chat with their content in real-time.",
+                image: `${siteConfig.siteUrl}/og.jpg`,
+                datePublished: "2024-01-15",
+                dateModified: new Date().toISOString().split("T")[0],
+                author: {
+                  name: siteConfig.name,
+                  url: siteConfig.siteUrl,
+                },
+              })}
+            />
             <p className="text-xl text-slate-600 dark:text-slate-300 mb-8 leading-relaxed">
-              A cutting-edge Retrieval-Augmented Generation (RAG) agent capable of ingesting websites and enabling users to chat with their content in real-time. Built with a focus on accuracy, performance, and a premium user experience.
+              A cutting-edge Retrieval-Augmented Generation (RAG) agent capable
+              of ingesting websites and enabling users to chat with their
+              content in real-time. Built with a focus on accuracy, performance,
+              and a premium user experience.
             </p>
 
             <div className="flex flex-wrap gap-4">
@@ -62,6 +117,17 @@ export default function DocMindCaseStudy() {
             </div>
           </header>
 
+          <SummaryBox
+            title="Project Overview"
+            items={[
+              { label: "Duration", value: "3 months" },
+              { label: "Tech Stack", value: "Next.js, LangChain, OpenAI" },
+              { label: "Status", value: "Live & Active" },
+              { label: "Type", value: "AI Chatbot, RAG System" },
+            ]}
+            className="mb-12"
+          />
+
           <section className="mb-16">
             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
               <Bot className="h-6 w-6 text-indigo-500" />
@@ -69,11 +135,18 @@ export default function DocMindCaseStudy() {
             </h2>
             <div className="prose prose-slate dark:prose-invert max-w-none text-slate-600 dark:text-slate-300">
               <p>
-                In the era of large language models, static information retrieval is no longer enough.
-                DocMind bridges the gap between static web content and conversational AI. By providing an intuitive interface for URL ingestion, it allows users to unlock conversational insights from any website instantly.
+                In the era of large language models, static information
+                retrieval is no longer enough. DocMind bridges the gap between
+                static web content and conversational AI. By providing an
+                intuitive interface for URL ingestion, it allows users to unlock
+                conversational insights from any website instantly.
               </p>
               <p>
-                The core challenge was building a system that could accurately parse messy web data, intelligently chunk it to preserve semantic meaning, and quickly retrieve relevant context for an LLM to formulate an answer—all while minimizing hallucinations and ensuring the UI feels snappy and responsive.
+                The core challenge was building a system that could accurately
+                parse messy web data, intelligently chunk it to preserve
+                semantic meaning, and quickly retrieve relevant context for an
+                LLM to formulate an answer—all while minimizing hallucinations
+                and ensuring the UI feels snappy and responsive.
               </p>
             </div>
           </section>
@@ -86,20 +159,29 @@ export default function DocMindCaseStudy() {
               </h2>
               <ul className="space-y-4 text-slate-600 dark:text-slate-300">
                 <li className="flex items-start">
-                  <span className="font-semibold text-slate-900 dark:text-slate-100 mr-2 min-w-[100px]">Frontend:</span>
+                  <span className="font-semibold text-slate-900 dark:text-slate-100 mr-2 min-w-[100px]">
+                    Frontend:
+                  </span>
                   Next.js 15 (App Router), Tailwind CSS 4, Framer Motion
                 </li>
                 <li className="flex items-start">
-                  <span className="font-semibold text-slate-900 dark:text-slate-100 mr-2 min-w-[100px]">AI Pipeline:</span>
+                  <span className="font-semibold text-slate-900 dark:text-slate-100 mr-2 min-w-[100px]">
+                    AI Pipeline:
+                  </span>
                   LangChain.js, OpenAI (GPT-4o/3.5-turbo), OpenAI Embeddings
                 </li>
                 <li className="flex items-start">
-                  <span className="font-semibold text-slate-900 dark:text-slate-100 mr-2 min-w-[100px]">Ingestion:</span>
+                  <span className="font-semibold text-slate-900 dark:text-slate-100 mr-2 min-w-[100px]">
+                    Ingestion:
+                  </span>
                   Puppeteer for robust web scraping
                 </li>
                 <li className="flex items-start">
-                  <span className="font-semibold text-slate-900 dark:text-slate-100 mr-2 min-w-[100px]">Vector Store:</span>
-                  In-memory vector store (designed to scale to ChromaDB/Pinecone)
+                  <span className="font-semibold text-slate-900 dark:text-slate-100 mr-2 min-w-[100px]">
+                    Vector Store:
+                  </span>
+                  In-memory vector store (designed to scale to
+                  ChromaDB/Pinecone)
                 </li>
               </ul>
             </section>
@@ -130,44 +212,71 @@ export default function DocMindCaseStudy() {
                   <span className="absolute flex items-center justify-center w-8 h-8 rounded-full -left-4 ring-4 ring-white dark:ring-slate-950 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-bold text-sm">
                     1
                   </span>
-                  <h3 className="font-bold text-slate-900 dark:text-white text-lg mb-1">Ingest & Load</h3>
-                  <p className="text-slate-600 dark:text-slate-400">User provides a URL. Puppeteer visits the page, bypassing common blockers, and extracts the raw text content.</p>
+                  <h3 className="font-bold text-slate-900 dark:text-white text-lg mb-1">
+                    Ingest & Load
+                  </h3>
+                  <p className="text-slate-600 dark:text-slate-400">
+                    User provides a URL. Puppeteer visits the page, bypassing
+                    common blockers, and extracts the raw text content.
+                  </p>
                 </li>
                 <li className="ml-6">
                   <span className="absolute flex items-center justify-center w-8 h-8 rounded-full -left-4 ring-4 ring-white dark:ring-slate-950 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-bold text-sm">
                     2
                   </span>
-                  <h3 className="font-bold text-slate-900 dark:text-white text-lg mb-1">Split</h3>
-                  <p className="text-slate-600 dark:text-slate-400">Using LangChain&apos;s RecursiveCharacterTextSplitter, content is divided into manageable chunks with overlap to retain context across boundaries.</p>
+                  <h3 className="font-bold text-slate-900 dark:text-white text-lg mb-1">
+                    Split
+                  </h3>
+                  <p className="text-slate-600 dark:text-slate-400">
+                    Using LangChain&apos;s RecursiveCharacterTextSplitter,
+                    content is divided into manageable chunks with overlap to
+                    retain context across boundaries.
+                  </p>
                 </li>
                 <li className="ml-6">
                   <span className="absolute flex items-center justify-center w-8 h-8 rounded-full -left-4 ring-4 ring-white dark:ring-slate-950 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 font-bold text-sm">
                     3
                   </span>
-                  <h3 className="font-bold text-slate-900 dark:text-white text-lg mb-1">Embed & Store</h3>
-                  <p className="text-slate-600 dark:text-slate-400">Chunks are converted into high-dimensional vector embeddings via OpenAI and stored for rapid similarity search.</p>
+                  <h3 className="font-bold text-slate-900 dark:text-white text-lg mb-1">
+                    Embed & Store
+                  </h3>
+                  <p className="text-slate-600 dark:text-slate-400">
+                    Chunks are converted into high-dimensional vector embeddings
+                    via OpenAI and stored for rapid similarity search.
+                  </p>
                 </li>
                 <li className="ml-6">
                   <span className="absolute flex items-center justify-center w-8 h-8 rounded-full -left-4 ring-4 ring-white dark:ring-slate-950 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 font-bold text-sm">
                     4
                   </span>
-                  <h3 className="font-bold text-slate-900 dark:text-white text-lg mb-1">Retrieve & Generate</h3>
-                  <p className="text-slate-600 dark:text-slate-400">User queries are embedded, compared against the store to retrieve relevant chunks, and fed into the LLM context window to synthesize an accurate, grounded response.</p>
+                  <h3 className="font-bold text-slate-900 dark:text-white text-lg mb-1">
+                    Retrieve & Generate
+                  </h3>
+                  <p className="text-slate-600 dark:text-slate-400">
+                    User queries are embedded, compared against the store to
+                    retrieve relevant chunks, and fed into the LLM context
+                    window to synthesize an accurate, grounded response.
+                  </p>
                 </li>
               </ol>
             </div>
           </section>
 
           <section>
-             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
               <Database className="h-6 w-6 text-rose-500" />
               Outcome
             </h2>
             <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-              DocMind demonstrates the practical application of RAG concepts in a modern web environment. It successfully removes the friction of extracting and interacting with web data, providing users with a robust tool to instantly query almost any open website in natural language.
+              DocMind demonstrates the practical application of RAG concepts in
+              a modern web environment. It successfully removes the friction of
+              extracting and interacting with web data, providing users with a
+              robust tool to instantly query almost any open website in natural
+              language.
             </p>
           </section>
 
+          <AuthorBio />
         </article>
       </main>
       <Footer />

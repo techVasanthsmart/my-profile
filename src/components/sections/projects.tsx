@@ -1,29 +1,85 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { featuredProjects, otherProjects } from "@/data/projects";
+import { gsap } from "@/lib/useGSAP";
 
 const ghChartUrl = "https://ghchart.rshah.org/techVasanthsmart";
 
 export function Projects() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const ctx = gsap.context(() => {
+      // Section heading
+      gsap.from(".projects-heading", {
+        opacity: 0,
+        y: 25,
+        duration: 0.6,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: ".projects-heading",
+          start: "top 85%",
+        },
+      });
+
+      // "Other Projects" sub-heading
+      gsap.from(".other-projects-heading", {
+        opacity: 0,
+        y: 15,
+        duration: 0.5,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: ".other-projects-heading",
+          start: "top 85%",
+        },
+      });
+
+      // GitHub chart
+      gsap.from(".gh-chart-wrapper", {
+        opacity: 0,
+        scale: 0.95,
+        duration: 0.7,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: ".gh-chart-wrapper",
+          start: "top 85%",
+        },
+      });
+
+      // GitHub CTA
+      gsap.from(".gh-cta", {
+        opacity: 0,
+        y: 15,
+        duration: 0.5,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: ".gh-cta",
+          start: "top 90%",
+        },
+      });
+    }, el);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="projects" className="relative scroll-mt-24 px-6 py-24">
+    <section id="projects" ref={sectionRef} className="relative scroll-mt-24 px-6 py-24">
       <div className="mx-auto max-w-6xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-16 text-center"
-        >
+        <div className="projects-heading mb-16 text-center">
           <h2 className="mb-4 text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">
             Projects
           </h2>
           <p className="mx-auto max-w-2xl text-slate-600 dark:text-slate-400">
             Real projects solving real problems. From PDF tools to AI-powered apps and live demos.
           </p>
-        </motion.div>
+        </div>
 
         {/* Featured projects */}
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -100,14 +156,9 @@ export function Projects() {
         </div>
 
         {/* Other Projects */}
-        <motion.h3
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-6 mt-16 text-xl font-semibold text-slate-800 dark:text-slate-100"
-        >
+        <h3 className="other-projects-heading mb-6 mt-16 text-xl font-semibold text-slate-800 dark:text-slate-100">
           Other Projects
-        </motion.h3>
+        </h3>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {otherProjects.map((project, i) => (
             <Card key={project.title} variant="bordered" delay={i * 0.05}>
@@ -164,12 +215,7 @@ export function Projects() {
         </div>
 
         {/* GitHub Activity */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          className="mt-20 relative mx-auto w-full max-w-5xl group"
-        >
+        <div className="gh-chart-wrapper mt-20 relative mx-auto w-full max-w-5xl group">
           <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-indigo-500 to-emerald-500 opacity-30 blur transition duration-1000 group-hover:opacity-50"></div>
           <div className="relative overflow-hidden rounded-2xl bg-white/60 p-6 backdrop-blur-xl dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-2xl">
             <h3 className="mb-6 text-center text-xl font-bold bg-gradient-to-r from-slate-800 to-slate-500 bg-clip-text text-transparent dark:from-white dark:to-slate-400">
@@ -188,14 +234,9 @@ export function Projects() {
               />
             </a>
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-12 text-center"
-        >
+        <div className="gh-cta mt-12 text-center">
           <a
             href="https://github.com/techVasanthsmart"
             target="_blank"
@@ -204,7 +245,7 @@ export function Projects() {
           >
             View Projects on GitHub
           </a>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

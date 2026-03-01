@@ -6,9 +6,17 @@ import Link from "next/link";
 import { ArrowLeft, Github, Globe, FileText, CheckCircle } from "lucide-react";
 import { Metadata } from "next";
 import { siteConfig } from "@/lib/site-config";
+import { Breadcrumbs } from "@/components/breadcrumbs";
+import { SchemaInjector } from "@/components/schema-injector";
+import { SummaryBox } from "@/components/summary-box";
+import { AuthorBio } from "@/components/author-bio";
 
 // Ensure this uses the correct Next.js dynamic routing type for `params`
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
   const resolvedParams = await params;
   const project = projects.find((p) => p.slug === resolvedParams.slug);
   if (!project) return { title: "Project Not Found" };
@@ -16,6 +24,29 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: `${project.title} | ${siteConfig.name}`,
     description: project.description,
+    alternates: {
+      canonical: `${siteConfig.siteUrl}/projects/${resolvedParams.slug}`,
+    },
+    openGraph: {
+      title: project.title,
+      description: project.description,
+      url: `${siteConfig.siteUrl}/projects/${resolvedParams.slug}`,
+      siteName: siteConfig.name,
+      images: [
+        {
+          url: `${siteConfig.siteUrl}/og.jpg`,
+          width: 1200,
+          height: 630,
+        },
+      ],
+      type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: project.title,
+      description: project.description,
+      images: [`${siteConfig.siteUrl}/og.jpg`],
+    },
   };
 }
 
@@ -25,7 +56,11 @@ export function generateStaticParams() {
   }));
 }
 
-export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function ProjectPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const resolvedParams = await params;
   const project = projects.find((p) => p.slug === resolvedParams.slug);
 
@@ -38,6 +73,13 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       <Navbar />
       <main className="min-h-screen pt-24 pb-16">
         <article className="max-w-4xl mx-auto px-6">
+          <Breadcrumbs
+            items={[
+              { name: "Projects", url: "/projects" },
+              { name: project.title },
+            ]}
+          />
+
           <Link
             href="/#projects"
             className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 mb-8 transition-colors group"
@@ -50,6 +92,21 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
             <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6">
               {project.title}
             </h1>
+            <SchemaInjector
+              schema={{
+                "@context": "https://schema.org",
+                "@type": "WebApplication",
+                name: project.title,
+                description: project.description,
+                url: `${siteConfig.siteUrl}/projects/${project.slug}`,
+                creator: {
+                  "@type": "Person",
+                  name: siteConfig.name,
+                  url: siteConfig.siteUrl,
+                },
+                applicationCategory: "WebApplication",
+              }}
+            />
             <p className="text-xl text-slate-600 dark:text-slate-300 mb-8 leading-relaxed">
               {project.description}
             </p>
@@ -87,7 +144,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                 </Link>
               )}
             </div>
-            
+
             <div className="flex flex-wrap gap-2 mb-8">
               {project.tags.map((tag) => (
                 <span
@@ -100,6 +157,23 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
             </div>
           </header>
 
+          <SummaryBox
+            title="Project Details"
+            items={[
+              {
+                label: "Status",
+                value: project.tags.includes("Live") ? "Live" : "Completed",
+              },
+              { label: "Technologies", value: project.tech.join(", ") },
+              { label: "Category", value: project.tags[0] || "Full Stack" },
+              {
+                label: "View Project",
+                value: project.liveUrl ? "Available" : "Source Code",
+              },
+            ]}
+            className="mb-12"
+          />
+
           {project.features && project.features.length > 0 && (
             <section className="mb-16">
               <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
@@ -108,17 +182,23 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
               </h2>
               <div className="grid sm:grid-cols-2 gap-4">
                 {project.features.map((feature, idx) => (
-                  <div key={idx} className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-start gap-4">
-                     <span className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 font-bold text-sm">
-                       {idx + 1}
-                     </span>
-                     <p className="text-slate-700 dark:text-slate-300 mt-1">{feature}</p>
+                  <div
+                    key={idx}
+                    className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-start gap-4"
+                  >
+                    <span className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 font-bold text-sm">
+                      {idx + 1}
+                    </span>
+                    <p className="text-slate-700 dark:text-slate-300 mt-1">
+                      {feature}
+                    </p>
                   </div>
                 ))}
               </div>
             </section>
           )}
 
+          <AuthorBio />
         </article>
       </main>
       <Footer />

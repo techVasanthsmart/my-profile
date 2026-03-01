@@ -2,7 +2,28 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
 import { siteConfig } from "@/lib/site-config";
 import "./globals.css";
-import { BackgroundMatrix } from "@/components/ui/background-matrix";
+import { Space_Mono, Inter, Fira_Code } from "next/font/google";
+
+const spaceMono = Space_Mono({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-body",
+  display: "swap",
+});
+
+const firaCode = Fira_Code({
+  subsets: ["latin"],
+  variable: "--font-code",
+  display: "swap",
+});
+import { AnimatedBackground } from "@/components/ui/animated-background";
+import { SmoothScroll } from "@/components/smooth-scroll";
 import { JsonLd } from "@/components/json-ld";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -73,6 +94,7 @@ export const metadata: Metadata = {
   verification: {
     google: "MtTZgPguua5yFv3AybdrNJ-yHwwfKj3dg4v2q_OHccg",
   },
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
@@ -81,7 +103,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={`${spaceMono.variable} ${inter.variable} ${firaCode.variable}`}>
       <head>
         <JsonLd />
       </head>
@@ -92,8 +114,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange={false}
         >
-          <BackgroundMatrix />
-          <div className="relative z-10">{children}</div>
+          <AnimatedBackground />
+          <SmoothScroll>
+            <div className="relative z-10">{children}</div>
+          </SmoothScroll>
           <Analytics />
         </ThemeProvider>
       </body>

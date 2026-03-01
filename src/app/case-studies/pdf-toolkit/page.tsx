@@ -1,21 +1,53 @@
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import { ArrowLeft, Github, Globe, Server, Code, Bot, Zap, Database, CheckCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  Github,
+  Globe,
+  Server,
+  Code,
+  Bot,
+  Zap,
+  Database,
+  CheckCircle,
+} from "lucide-react";
 import Link from "next/link";
 import { Metadata } from "next";
 import { siteConfig } from "@/lib/site-config";
 import Image from "next/image";
+import { Breadcrumbs } from "@/components/breadcrumbs";
+import { SchemaInjector } from "@/components/schema-injector";
+import { createArticleSchema } from "@/components/json-ld";
+import { SummaryBox } from "@/components/summary-box";
+import { AuthorBio } from "@/components/author-bio";
 
 export const metadata: Metadata = {
-  title: "PDF Toolkit Case Study | Vasanth Kumar",
-  description: "A free, privacy-focused, and no-login client-side PDF toolkit built with React, Vite, and pdf-lib.",
+  title: "PDF Toolkit Case Study - Client-Side PDF Tools",
+  description:
+    "A free, privacy-focused, and no-login client-side PDF toolkit built with React, Vite, and pdf-lib. All processing happens entirely in the browser.",
+  alternates: {
+    canonical: `${siteConfig.siteUrl}/case-studies/pdf-toolkit`,
+  },
   openGraph: {
-    title: "PDF Toolkit Case Study | Vasanth Kumar",
-    description: "A free, privacy-focused, and no-login client-side PDF toolkit built with React, Vite, and pdf-lib.",
+    title: "PDF Toolkit Case Study - Client-Side PDF Tools",
+    description:
+      "A free, privacy-focused, and no-login client-side PDF toolkit built with React, Vite, and pdf-lib. All processing happens entirely in the browser.",
     url: `${siteConfig.siteUrl}/case-studies/pdf-toolkit`,
     siteName: siteConfig.name,
-    images: ["/og.jpg"],
+    images: [
+      {
+        url: `${siteConfig.siteUrl}/og.jpg`,
+        width: 1200,
+        height: 630,
+      },
+    ],
     type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PDF Toolkit Case Study - Client-Side PDF Tools",
+    description: "A privacy-first PDF toolkit built with React and Vite",
+    images: [`${siteConfig.siteUrl}/og.jpg`],
   },
 };
 
@@ -25,6 +57,13 @@ export default function PdfToolkitCaseStudy() {
       <Navbar />
       <main className="min-h-screen pt-24 pb-16">
         <article className="max-w-4xl mx-auto px-6">
+          <Breadcrumbs
+            items={[
+              { name: "Case Studies", url: "/case-studies" },
+              { name: "PDF Toolkit" },
+            ]}
+          />
+
           <Link
             href="/#projects"
             className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 mb-8 transition-colors group"
@@ -37,8 +76,25 @@ export default function PdfToolkitCaseStudy() {
             <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6">
               PDF Toolkit
             </h1>
+            <SchemaInjector
+              schema={createArticleSchema({
+                headline: "PDF Toolkit - Client-Side PDF Tools",
+                description:
+                  "A free, privacy-focused, and no-login client-side PDF toolkit built with React, Vite, and pdf-lib.",
+                image: `${siteConfig.siteUrl}/og.jpg`,
+                datePublished: "2023-08-20",
+                dateModified: new Date().toISOString().split("T")[0],
+                author: {
+                  name: siteConfig.name,
+                  url: siteConfig.siteUrl,
+                },
+              })}
+            />
             <p className="text-xl text-slate-600 dark:text-slate-300 mb-8 leading-relaxed">
-              A free, privacy-focused, and no-login client-side PDF toolkit built with React, Vite, and pdf-lib. All processing happens entirely within the browser, ensuring data security and high performance.
+              A free, privacy-focused, and no-login client-side PDF toolkit
+              built with React, Vite, and pdf-lib. All processing happens
+              entirely within the browser, ensuring data security and high
+              performance.
             </p>
 
             <div className="flex flex-wrap items-center gap-4 mb-8">
@@ -61,17 +117,28 @@ export default function PdfToolkitCaseStudy() {
                 View Code
               </a>
             </div>
-            
-            <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-xl mb-12">
-               <Image 
-                 src="/image.png"
-                 alt="PDF Toolkit Interface"
-                 fill
-                 className="object-cover"
-                 priority
-               />
-            </div>
           </header>
+
+          <SummaryBox
+            title="Project Overview"
+            items={[
+              { label: "Duration", value: "2 months" },
+              { label: "Tech Stack", value: "React, Vite, pdf-lib" },
+              { label: "Status", value: "Live & Maintained" },
+              { label: "Type", value: "Client-Side Utility" },
+            ]}
+            className="mb-12"
+          />
+
+          <section className="relative aspect-video w-full rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-xl mb-12">
+            <Image
+              src="/image.png"
+              alt="PDF Toolkit Interface"
+              fill
+              className="object-cover"
+              priority
+            />
+          </section>
 
           <section className="mb-16">
             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
@@ -79,22 +146,42 @@ export default function PdfToolkitCaseStudy() {
               Core Features
             </h2>
             <div className="grid sm:grid-cols-2 gap-6">
-               <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
-                  <h3 className="font-bold text-lg text-slate-900 dark:text-white mb-2">Pure Client-Side</h3>
-                  <p className="text-slate-600 dark:text-slate-400">All merging and manipulation happens directly in your browser. No files are ever uploaded to a server.</p>
-               </div>
-               <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
-                  <h3 className="font-bold text-lg text-slate-900 dark:text-white mb-2">100% Free & No Login</h3>
-                  <p className="text-slate-600 dark:text-slate-400">Immediate access to all tools with zero hidden costs, subscriptions, or authentication barriers.</p>
-               </div>
-               <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
-                  <h3 className="font-bold text-lg text-slate-900 dark:text-white mb-2">Drag & Drop</h3>
-                  <p className="text-slate-600 dark:text-slate-400">Intuitive interface for adding files and reordering file cards to define the precise merge sequence.</p>
-               </div>
-               <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
-                  <h3 className="font-bold text-lg text-slate-900 dark:text-white mb-2">Instant Processing</h3>
-                  <p className="text-slate-600 dark:text-slate-400">Utilizes highly optimized libraries to process complex PDF tasks instantly on the user&apos;s machine.</p>
-               </div>
+              <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <h3 className="font-bold text-lg text-slate-900 dark:text-white mb-2">
+                  Pure Client-Side
+                </h3>
+                <p className="text-slate-600 dark:text-slate-400">
+                  All merging and manipulation happens directly in your browser.
+                  No files are ever uploaded to a server.
+                </p>
+              </div>
+              <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <h3 className="font-bold text-lg text-slate-900 dark:text-white mb-2">
+                  100% Free & No Login
+                </h3>
+                <p className="text-slate-600 dark:text-slate-400">
+                  Immediate access to all tools with zero hidden costs,
+                  subscriptions, or authentication barriers.
+                </p>
+              </div>
+              <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <h3 className="font-bold text-lg text-slate-900 dark:text-white mb-2">
+                  Drag & Drop
+                </h3>
+                <p className="text-slate-600 dark:text-slate-400">
+                  Intuitive interface for adding files and reordering file cards
+                  to define the precise merge sequence.
+                </p>
+              </div>
+              <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <h3 className="font-bold text-lg text-slate-900 dark:text-white mb-2">
+                  Instant Processing
+                </h3>
+                <p className="text-slate-600 dark:text-slate-400">
+                  Utilizes highly optimized libraries to process complex PDF
+                  tasks instantly on the user&apos;s machine.
+                </p>
+              </div>
             </div>
           </section>
 
@@ -106,23 +193,33 @@ export default function PdfToolkitCaseStudy() {
               </h2>
               <ul className="space-y-4 text-slate-600 dark:text-slate-300">
                 <li className="flex items-start">
-                  <span className="font-semibold text-slate-900 dark:text-slate-100 mr-2 min-w-[120px]">Framework:</span>
+                  <span className="font-semibold text-slate-900 dark:text-slate-100 mr-2 min-w-[120px]">
+                    Framework:
+                  </span>
                   React + Vite
                 </li>
                 <li className="flex items-start">
-                  <span className="font-semibold text-slate-900 dark:text-slate-100 mr-2 min-w-[120px]">PDF Engine:</span>
+                  <span className="font-semibold text-slate-900 dark:text-slate-100 mr-2 min-w-[120px]">
+                    PDF Engine:
+                  </span>
                   pdf-lib
                 </li>
                 <li className="flex items-start">
-                  <span className="font-semibold text-slate-900 dark:text-slate-100 mr-2 min-w-[120px]">Interactions:</span>
+                  <span className="font-semibold text-slate-900 dark:text-slate-100 mr-2 min-w-[120px]">
+                    Interactions:
+                  </span>
                   @hello-pangea/dnd (Drag and drop)
                 </li>
                 <li className="flex items-start">
-                  <span className="font-semibold text-slate-900 dark:text-slate-100 mr-2 min-w-[120px]">UI/UX:</span>
+                  <span className="font-semibold text-slate-900 dark:text-slate-100 mr-2 min-w-[120px]">
+                    UI/UX:
+                  </span>
                   Framer Motion & Lucide React
                 </li>
                 <li className="flex items-start">
-                  <span className="font-semibold text-slate-900 dark:text-slate-100 mr-2 min-w-[120px]">Analytics:</span>
+                  <span className="font-semibold text-slate-900 dark:text-slate-100 mr-2 min-w-[120px]">
+                    Analytics:
+                  </span>
                   react-ga4 (Google Analytics 4)
                 </li>
               </ul>
@@ -133,31 +230,41 @@ export default function PdfToolkitCaseStudy() {
                 <Zap className="h-6 w-6 text-amber-500" />
                 Setup Instructions
               </h2>
-               <div className="bg-slate-950 rounded-xl p-4 font-mono text-sm text-slate-300 overflow-x-auto">
-                 <p className="text-slate-500 mb-2"># 1. Install dependencies</p>
-                 <p className="mb-4 text-indigo-300">npm install</p>
-                 
-                 <p className="text-slate-500 mb-2"># 2. Start development server</p>
-                 <p className="mb-4 text-indigo-300">npm run dev</p>
+              <div className="bg-slate-950 rounded-xl p-4 font-mono text-sm text-slate-300 overflow-x-auto">
+                <p className="text-slate-500 mb-2"># 1. Install dependencies</p>
+                <p className="mb-4 text-indigo-300">npm install</p>
 
-                 <p className="text-slate-500 mb-2"># 3. Build for production</p>
-                 <p className="text-indigo-300">npm run build</p>
-               </div>
+                <p className="text-slate-500 mb-2">
+                  # 2. Start development server
+                </p>
+                <p className="mb-4 text-indigo-300">npm run dev</p>
+
+                <p className="text-slate-500 mb-2"># 3. Build for production</p>
+                <p className="text-indigo-300">npm run build</p>
+              </div>
             </section>
           </div>
 
           <section>
-             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
               <Database className="h-6 w-6 text-rose-500" />
               Analytics & SEO Approach
             </h2>
             <div className="prose prose-slate dark:prose-invert max-w-none text-slate-600 dark:text-slate-300">
               <p>
-                The application tracks usage responsibly using <strong>Google Analytics 4 (GA4)</strong>. It is configured via environment variables (<code>VITE_GA_MEASUREMENT_ID</code>), enabling automatic route change detection for Single Page Applications (SPAs). Additionally, the site implements crucial SEO metadata, Open Graph labels, Twitter Cards, and JSON-LD structured data directly within the app shell, ensuring maximum search engine visibility for a static, client-side application.
+                The application tracks usage responsibly using{" "}
+                <strong>Google Analytics 4 (GA4)</strong>. It is configured via
+                environment variables (<code>VITE_GA_MEASUREMENT_ID</code>),
+                enabling automatic route change detection for Single Page
+                Applications (SPAs). Additionally, the site implements crucial
+                SEO metadata, Open Graph labels, Twitter Cards, and JSON-LD
+                structured data directly within the app shell, ensuring maximum
+                search engine visibility for a static, client-side application.
               </p>
             </div>
           </section>
 
+          <AuthorBio />
         </article>
       </main>
       <Footer />

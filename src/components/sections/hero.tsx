@@ -1,76 +1,153 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import Image from "next/image";
+import { gsap } from "@/lib/useGSAP";
 
 const pdfToolkitUrl = "https://pdf-toolkit.vasanthubs.co.in/";
 const portfolioUrl = "https://vasanthubs.co.in/";
 
 export function Hero() {
-  const [text, setText] = useState("");
+  const sectionRef = useRef<HTMLElement>(null);
   const fullText = "Vasanth Kumar";
 
+  // Split headline into individual character spans for GSAP stagger animation
+  const chars = useMemo(
+    () =>
+      fullText.split("").map((ch, i) => (
+        <span key={i} className="hero-char inline-block text-slate-900 dark:text-slate-200">
+          {ch === " " ? "\u00A0" : ch}
+        </span>
+      )),
+    []
+  );
+
+  // GSAP page-load sequence
   useEffect(() => {
-    let index = 0;
-    const interval = setInterval(() => {
-      setText(fullText.slice(0, index));
-      index++;
-      if (index > fullText.length) clearInterval(interval);
-    }, 100);
-    return () => clearInterval(interval);
+    const el = sectionRef.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const ctx = gsap.context(() => {
+      // Hide characters initially (before stagger begins)
+      gsap.set(".hero-char", { autoAlpha: 0, y: 60 });
+
+      const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+
+      // 1. Stagger headline characters in from below with a springy pop
+      tl.to(".hero-char", {
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.6,
+          stagger: 0.04,
+          ease: "back.out(1.7)",
+        })
+        // 2. Hero avatar scales down from 1.2 → 1.0 while fading in
+        .from(
+          ".hero-avatar",
+          {
+            opacity: 0,
+            scale: 1.2,
+            duration: 0.7,
+            ease: "power2.out",
+          },
+          "-=0.3"
+        )
+        // 3. Rest of the entrance sequence
+        .from(
+          ".hero-status",
+          {
+            opacity: 0,
+            y: 20,
+            duration: 0.5,
+          },
+          "-=0.2"
+        )
+        .from(
+          ".hero-glass",
+          {
+            opacity: 0,
+            y: 20,
+            duration: 0.6,
+          },
+          "-=0.1"
+        )
+        .from(
+          ".hero-cta",
+          {
+            opacity: 0,
+            y: 25,
+            duration: 0.5,
+          },
+          "-=0.1"
+        );
+
+      // Floating blob animation
+      gsap.to(".hero-blob", {
+        y: 15,
+        x: -10,
+        scale: 1.05,
+        duration: 4,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+
+      gsap.to(".hero-blob-2", {
+        y: -12,
+        x: 8,
+        scale: 0.95,
+        duration: 5,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        delay: 1,
+      });
+    }, el);
+
+    return () => ctx.revert();
   }, []);
 
   return (
     <section
       id="hero"
+      ref={sectionRef}
       className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 pt-20"
     >
+      {/* Floating blobs */}
+      <div className="hero-blob absolute -top-20 -left-20 h-72 w-72 rounded-full bg-indigo-400/20 blur-3xl dark:bg-indigo-500/10" />
+      <div className="hero-blob-2 absolute -bottom-20 -right-20 h-72 w-72 rounded-full bg-purple-400/20 blur-3xl dark:bg-purple-500/10" />
+
       <div className="relative z-10 mx-auto max-w-5xl text-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="mb-8"
-        >
+        <div className="hero-avatar mb-8">
           <div className="relative inline-block">
             <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-indigo-600 to-indigo-400 opacity-75 blur transition duration-1000 group-hover:opacity-100 group-hover:duration-200 dark:from-neon-cyan dark:to-neon-purple"></div>
             <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-white border border-slate-200 dark:bg-black dark:border-slate-800 overflow-hidden">
-               <Image
-                 src="/svk.png"
-                 alt="Vasanth Kumar"
-                 width={80}
-                 height={80}
-                 className="h-full w-full object-cover"
-                 priority
-               />
+              <Image
+                src="/svk.png"
+                alt="Vasanth Kumar"
+                width={80}
+                height={80}
+                className="h-full w-full object-cover"
+                priority
+              />
             </div>
           </div>
-        </motion.div>
+        </div>
 
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-4 text-lg font-medium text-indigo-600 tracking-widest uppercase dark:text-neon-cyan dark:neon-text"
-        >
+        <p className="hero-status mb-4 text-lg font-medium text-indigo-600 tracking-widest uppercase dark:text-neon-cyan dark:neon-text">
           System Online // Initializing...
-        </motion.p>
+        </p>
 
-        <h1 className="mb-6 text-6xl font-bold tracking-tighter text-slate-900 dark:text-white sm:text-7xl md:text-9xl glitch-container">
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:via-slate-200 dark:to-slate-400">
-            {text}
-          </span>
+        <h1
+          className="hero-headline mb-6 text-6xl font-bold tracking-tighter sm:text-7xl md:text-9xl"
+        >
+          {chars}
           <span className="animate-pulse text-indigo-600 dark:text-neon-purple">_</span>
         </h1>
 
-        <motion.div
-           initial={{ opacity: 0 }}
-           animate={{ opacity: 1 }}
-           transition={{ delay: 1 }}
-           className="glass-panel p-6 rounded-2xl mx-auto max-w-3xl mb-10 border-indigo-100 dark:border-neon-cyan/20"
-        >
+        <div className="hero-glass glass-panel p-6 rounded-2xl mx-auto max-w-3xl mb-10 border-indigo-100 dark:border-neon-cyan/20">
           <p className="text-xl text-slate-700 dark:text-slate-300 sm:text-2xl leading-relaxed">
             Architecting <span className="text-indigo-600 dark:text-neon-cyan">Digital Realities</span> &{" "}
             <span className="text-indigo-500 dark:text-neon-purple">Intelligent Systems</span>
@@ -78,14 +155,9 @@ export function Hero() {
           <p className="mt-4 text-slate-600 dark:text-slate-400">
             Senior Full Stack Developer | AI Enthusiast | Problem Solver
           </p>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 1.2 }}
-          className="flex flex-wrap items-center justify-center gap-6"
-        >
+        <div className="hero-cta flex flex-wrap items-center justify-center gap-6">
           <Link
             href="#projects"
             className="group relative inline-flex items-center justify-center overflow-hidden rounded-full p-0.5 font-bold transition-all duration-300 hover:scale-110 focus:outline-none"
@@ -102,7 +174,7 @@ export function Hero() {
           >
             Initialize Contact
           </Link>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

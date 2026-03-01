@@ -1,7 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
 import type { HTMLAttributes } from "react";
+import { gsap, ScrollTrigger } from "@/lib/useGSAP";
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
   variant?: "default" | "gradient" | "bordered";
@@ -17,6 +18,8 @@ export function Card({
   hover = true,
   ...props
 }: CardProps) {
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
   const base =
     "rounded-2xl transition-all duration-300 " +
     (variant === "gradient"
@@ -25,23 +28,48 @@ export function Card({
         ? "border-2 border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 backdrop-blur"
         : "bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-lg shadow-slate-200/50 dark:shadow-none");
 
-  const content = (
-    <div className={`${base} ${className}`} {...props}>
-      {children}
-    </div>
-  );
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el) return;
+
+    // Check reduced motion
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    // Scroll-reveal is now handled globally via SmoothScroll's ScrollTrigger.batch for ".feature-card"
+
+    // Hover lift
+    if (hover) {
+      const onEnter = () => {
+        gsap.to(el, { y: -6, duration: 0.25, ease: "power2.out", overwrite: "auto" });
+      };
+      const onLeave = () => {
+        gsap.to(el, { y: 0, duration: 0.25, ease: "power2.out", overwrite: "auto" });
+      };
+      el.addEventListener("mouseenter", onEnter);
+      el.addEventListener("mouseleave", onLeave);
+
+      return () => {
+        el.removeEventListener("mouseenter", onEnter);
+        el.removeEventListener("mouseleave", onLeave);
+        ScrollTrigger.getAll().forEach((t) => {
+          if (t.trigger === el) t.kill();
+        });
+      };
+    }
+
+    return () => {
+      ScrollTrigger.getAll().forEach((t) => {
+        if (t.trigger === el) t.kill();
+      });
+    };
+  }, [delay, hover]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, delay }}
-      whileHover={hover ? { y: -4, transition: { duration: 0.2 } } : undefined}
-      className="h-full"
-    >
-      {content}
-    </motion.div>
+    <div ref={wrapperRef} className="feature-card h-full gsap-will-change" style={{ opacity: 0 }}>
+      <div className={`${base} ${className}`} {...props}>
+        {children}
+      </div>
+    </div>
   );
 }
 

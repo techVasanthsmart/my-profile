@@ -1,7 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { gsap } from "@/lib/useGSAP";
 
 const experiences = [
   {
@@ -60,22 +61,40 @@ const experiences = [
 ];
 
 export function Experience() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const ctx = gsap.context(() => {
+      gsap.from(".exp-heading", {
+        opacity: 0,
+        y: 25,
+        duration: 0.6,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: ".exp-heading",
+          start: "top 85%",
+        },
+      });
+    }, el);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="experience" className="relative scroll-mt-24 bg-slate-50/50 px-6 py-24 dark:bg-slate-900/30">
+    <section id="experience" ref={sectionRef} className="relative scroll-mt-24 bg-slate-50/50 px-6 py-24 dark:bg-slate-900/30">
       <div className="mx-auto max-w-6xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-16 text-center"
-        >
+        <div className="exp-heading mb-16 text-center">
           <h2 className="mb-4 text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">
             Experience
           </h2>
           <p className="mx-auto max-w-2xl text-slate-600 dark:text-slate-400">
             Leading end-to-end product development and scalable systems across telecom, CRM, and enterprise tools.
           </p>
-        </motion.div>
+        </div>
 
         <div className="space-y-8">
           {experiences.map((exp, i) => (

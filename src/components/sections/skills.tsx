@@ -1,7 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { gsap } from "@/lib/useGSAP";
 
 const skillCategories = [
   {
@@ -40,42 +41,94 @@ const skillCategories = [
   },
 ];
 
-function SkillBar({ name, level, delay }: { name: string; level: number; delay: number }) {
+function SkillBar({ name, level, categoryIndex, skillIndex }: { name: string; level: number; categoryIndex: number; skillIndex: number }) {
+  const barRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const bar = barRef.current;
+    const container = containerRef.current;
+    if (!bar || !container) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      bar.style.width = `${level}%`;
+      return;
+    }
+
+    // Fade in label
+    gsap.from(container, {
+      opacity: 0,
+      x: -15,
+      duration: 0.5,
+      delay: categoryIndex * 0.1 + skillIndex * 0.05,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: container,
+        start: "top 90%",
+      },
+    });
+
+    // Animate bar width
+    gsap.fromTo(
+      bar,
+      { width: "0%" },
+      {
+        width: `${level}%`,
+        duration: 0.9,
+        delay: categoryIndex * 0.1 + skillIndex * 0.05 + 0.2,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: container,
+          start: "top 90%",
+        },
+      }
+    );
+  }, [level, categoryIndex, skillIndex]);
+
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -10 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay }}
-      className="space-y-2"
-    >
+    <div ref={containerRef} className="space-y-2">
       <div className="flex justify-between text-sm">
         <span className="font-medium text-slate-700 dark:text-slate-300">{name}</span>
         <span className="text-slate-500 dark:text-slate-400">{level}%</span>
       </div>
       <div className="h-2 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
-        <motion.div
-          initial={{ width: 0 }}
-          whileInView={{ width: `${level}%` }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: delay + 0.2 }}
+        <div
+          ref={barRef}
           className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500"
+          style={{ width: 0 }}
         />
       </div>
-    </motion.div>
+    </div>
   );
 }
 
 export function Skills() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const ctx = gsap.context(() => {
+      gsap.from(".skills-heading", {
+        opacity: 0,
+        y: 25,
+        duration: 0.6,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: ".skills-heading",
+          start: "top 85%",
+        },
+      });
+    }, el);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="skills" className="relative scroll-mt-24 bg-slate-50/50 px-6 py-24 dark:bg-slate-900/30">
+    <section id="skills" ref={sectionRef} className="relative scroll-mt-24 bg-slate-50/50 px-6 py-24 dark:bg-slate-900/30">
       <div className="mx-auto max-w-6xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-16 text-center"
-        >
+        <div className="skills-heading mb-16 text-center">
           <h2 className="mb-4 text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">
             Skills & Expertise
           </h2>
@@ -83,7 +136,7 @@ export function Skills() {
             4+ years of hands-on experience with modern web technologies. Full stack with a
             focus on scalability and clean architecture.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid gap-8 md:grid-cols-3">
           {skillCategories.map((category, catIndex) => (
@@ -100,7 +153,8 @@ export function Skills() {
                     key={skill.name}
                     name={skill.name}
                     level={skill.level}
-                    delay={catIndex * 0.1 + i * 0.05}
+                    categoryIndex={catIndex}
+                    skillIndex={i}
                   />
                 ))}
               </CardContent>

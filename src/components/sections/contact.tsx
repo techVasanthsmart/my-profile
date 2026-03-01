@@ -1,8 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { siteConfig } from "@/lib/site-config";
+import { gsap } from "@/lib/useGSAP";
 import type { ReactNode } from "react";
 
 function ContactCard({
@@ -17,20 +18,13 @@ function ContactCard({
   delay?: number;
 }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay }}
-    >
-      <Card variant="bordered" delay={delay} hover={true}>
-        <CardHeader>
-          <CardTitle className="text-lg">{title}</CardTitle>
-          <p className="text-sm text-slate-600 dark:text-slate-400">{description}</p>
-        </CardHeader>
-        <CardContent>{children}</CardContent>
-      </Card>
-    </motion.div>
+    <Card variant="bordered" delay={delay} hover={true}>
+      <CardHeader>
+        <CardTitle className="text-lg">{title}</CardTitle>
+        <p className="text-sm text-slate-600 dark:text-slate-400">{description}</p>
+      </CardHeader>
+      <CardContent>{children}</CardContent>
+    </Card>
   );
 }
 
@@ -63,22 +57,60 @@ const quickContactItems = [
 ];
 
 export function Contact() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const ctx = gsap.context(() => {
+      // Set up a smooth scrolling foundation timeline for the entire wrapper
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: el,
+          start: "top 85%",
+          toggleActions: "play reverse play reverse",
+        },
+      });
+
+      // Heading animation
+      tl.from(".contact-heading", {
+        opacity: 0,
+        y: 25,
+        duration: 0.6,
+        ease: "power2.out",
+      })
+      // Target the .feature-card elements for stagger and fade in
+      .fromTo(
+        ".feature-card",
+        { y: 50, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          stagger: 0.15,
+          duration: 0.6,
+          ease: "power2.out",
+          overwrite: "auto",
+        },
+        "-=0.4"
+      );
+    }, el);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="contact" className="relative scroll-mt-24 bg-slate-50/50 px-6 py-24 dark:bg-slate-900/30">
+    <section id="contact" ref={sectionRef} className="relative scroll-mt-24 bg-slate-50/50 px-6 py-24 dark:bg-slate-900/30">
       <div className="mx-auto max-w-6xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-16 text-center"
-        >
+        <div className="contact-heading mb-16 text-center">
           <h2 className="mb-4 text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">
             Let&apos;s Work Together
           </h2>
           <p className="mx-auto max-w-2xl text-slate-600 dark:text-slate-400">
             Got a project in mind? Let&apos;s discuss how we can bring your ideas to life.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid gap-8 lg:grid-cols-2">
           <div className="space-y-6">
@@ -103,7 +135,7 @@ export function Contact() {
                   <span className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Location
                   </span>
-                  <span className="text-slate-700 dark:text-slate-300">{siteConfig.location}</span>
+                  <span className="text-slate-700 dark:text-slate-300">{siteConfig.Location}</span>
                 </li>
                 <li className="flex flex-col gap-1">
                   <span className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
@@ -138,7 +170,7 @@ export function Contact() {
             </ContactCard>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-4 self-start">
             <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">
               Quick Contact
             </h3>

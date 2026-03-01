@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import gsap from "gsap";
 
 type Theme = "dark" | "light" | "system";
 
@@ -30,6 +31,7 @@ export function ThemeProvider({
   const [theme, setThemeState] = React.useState<Theme>(defaultTheme);
   const [resolvedTheme, setResolvedTheme] = React.useState<"dark" | "light">("light");
   const [mounted, setMounted] = React.useState(false);
+  const isFirstRender = React.useRef(true);
 
   React.useEffect(() => {
     setMounted(true);
@@ -49,6 +51,28 @@ export function ThemeProvider({
       root.classList.remove("light", "dark");
       root.classList.add(isDark ? "dark" : "light");
       setResolvedTheme(isDark ? "dark" : "light");
+
+      // GSAP flash overlay on theme change (skip first render)
+      if (!isFirstRender.current && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        const overlay = document.createElement("div");
+        overlay.className = "theme-transition-overlay";
+        overlay.style.background = isDark ? "#0f172a" : "#ffffff";
+        document.body.appendChild(overlay);
+
+        gsap.fromTo(
+          overlay,
+          { opacity: 0 },
+          {
+            opacity: 0.35,
+            duration: 0.25,
+            yoyo: true,
+            repeat: 1,
+            ease: "power2.inOut",
+            onComplete: () => overlay.remove(),
+          }
+        );
+      }
+      isFirstRender.current = false;
     };
 
     if (theme === "system") {

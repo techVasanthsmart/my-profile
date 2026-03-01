@@ -1,0 +1,21 @@
+{
+  "name": "Vasanth Kumar — Portfolio",
+  "short_name": "Vasanth Kumar",
+  "description": "Senior Full Stack Developer specializing in scalable systems and end-to-end product development. React, Node.js, TypeScript, and modern web technologies.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "/svk.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/svk.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
