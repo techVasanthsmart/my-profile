@@ -106,7 +106,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: `${siteConfig.siteUrl}/uses`,
       lastModified: new Date(),
-      changeFrequency: "quarterly",
+      changeFrequency: "yearly",
       priority: basePriority.cluster,
     },
     {

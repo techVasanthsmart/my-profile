@@ -164,7 +164,7 @@ export default async function ProjectPage({
                 label: "Status",
                 value: project.tags.includes("Live") ? "Live" : "Completed",
               },
-              { label: "Technologies", value: project.tech.join(", ") },
+              { label: "Technologies", value: project.tags.join(", ") },
               { label: "Category", value: project.tags[0] || "Full Stack" },
               {
                 label: "View Project",
