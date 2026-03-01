@@ -89,7 +89,6 @@ export default function ProjectsPage() {
                           href={project.liveUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
                           className="text-sm font-semibold text-indigo-600 hover:underline dark:text-indigo-400"
                         >
                           Live Demo →
@@ -100,7 +99,6 @@ export default function ProjectsPage() {
                           href={project.codeUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
                           className="text-sm font-semibold text-gray-600 hover:underline dark:text-gray-400"
                         >
                           Source Code →
@@ -109,7 +107,6 @@ export default function ProjectsPage() {
                       {project.caseStudyUrl && (
                         <a
                           href={project.caseStudyUrl}
-                          onClick={(e) => e.stopPropagation()}
                           className="text-sm font-semibold text-cyan-600 hover:underline dark:text-cyan-400"
                         >
                           Case Study →
@@ -161,7 +158,6 @@ export default function ProjectsPage() {
                             href={project.liveUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            onClick={(e) => e.stopPropagation()}
                             className="text-xs font-semibold text-indigo-600 hover:underline dark:text-indigo-400"
                           >
                             Live
@@ -172,7 +168,6 @@ export default function ProjectsPage() {
                             href={project.codeUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            onClick={(e) => e.stopPropagation()}
                             className="text-xs font-semibold text-gray-600 hover:underline dark:text-gray-400"
                           >
                             Code
